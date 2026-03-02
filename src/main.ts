@@ -16,10 +16,22 @@ async function bootstrap() {
   const swagConfig = new DocumentBuilder()
     .setTitle('Kin-to Backend API')
     .setDescription('sf')
-    .setVersion('0.1')
+    .setVersion('0.3')
     .build();
   const document = SwaggerModule.createDocument(app, swagConfig);
-  SwaggerModule.setup('docs', app, document);
+  SwaggerModule.setup('docs', app, document, {
+    swaggerOptions: {
+      url: '/docs-json',
+    },
+    customCssUrl: 'https://unpkg.com/swagger-ui-dist@5/swagger-ui.css',
+    customJs: [
+      'https://unpkg.com/swagger-ui-dist@5/swagger-ui-bundle.js',
+      'https://unpkg.com/swagger-ui-dist@5/swagger-ui-standalone-preset.js',
+    ],
+  });
+  app.getHttpAdapter().get('/docs-json', (req, res) => {
+    res.json(document);
+  });
 
   await app.listen(config.PORT);
 }
