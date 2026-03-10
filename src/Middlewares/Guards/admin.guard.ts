@@ -3,6 +3,7 @@ import {
   ExecutionContext,
   ForbiddenException,
   Injectable,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
@@ -17,6 +18,9 @@ export class AdminAuthGuard implements CanActivate {
     const token = extractAccessToken(request);
 
     const payload: accessTokenPayload = this.jwt.decode(token);
+    if (!payload.userId) {
+      throw new UnauthorizedException();
+    }
     if (!payload.isAdmin) {
       throw new ForbiddenException();
     }

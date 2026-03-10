@@ -6,9 +6,10 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  Patch,
   Post,
-  Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { MenuService } from './menu.service';
 import { DishEntity } from './dishes.entity';
@@ -19,9 +20,17 @@ import {
   MenuViewModel,
 } from './menu.dto';
 import { DishesQueryRepo } from './dishes.queryRepo';
-import { ApiBody, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import { AdminAuthGuard } from '../../Middlewares/Guards/admin.guard';
 
 @ApiTags('Menu')
+@UseGuards(AdminAuthGuard)
 @Controller('menu')
 export class MenuController {
   constructor(
@@ -34,6 +43,7 @@ export class MenuController {
     description: 'Возвращает объект с вложенным списком блюд',
     type: MenuViewModel,
   })
+  @UseGuards()
   @Get()
   @HttpCode(HttpStatus.OK)
   async getMenu(): Promise<MenuViewModel> {
@@ -50,6 +60,7 @@ export class MenuController {
     status: 400,
     description: 'Invalid input',
   })
+  @ApiBearerAuth()
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async createDish(@Body() dish: DishInputModel): Promise<{ id: number }> {
@@ -75,7 +86,8 @@ export class MenuController {
     status: 404,
     description: 'Dish does not exist',
   })
-  @Put(':id/status')
+  @ApiBearerAuth()
+  @Patch(':id/status')
   @HttpCode(HttpStatus.NO_CONTENT)
   async setStatus(
     @Param() { id }: dishId,
@@ -92,6 +104,7 @@ export class MenuController {
     status: 404,
     description: 'Dish does not exist',
   })
+  @ApiBearerAuth()
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async delete(@Param() { id }: dishId): Promise<void> {
