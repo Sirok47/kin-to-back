@@ -40,7 +40,7 @@ export class MenuController {
 
   @ApiResponse({
     status: 200,
-    description: 'Возвращает объект с вложенным списком блюд',
+    description: 'Возвращает объект с вложенным списком только активных блюд',
     type: MenuViewModel,
   })
   @UseGuards()
@@ -48,6 +48,18 @@ export class MenuController {
   @HttpCode(HttpStatus.OK)
   async getMenu(): Promise<MenuViewModel> {
     return this.dishesQueryRepo.buildMenu(false);
+  }
+
+  @ApiResponse({
+    status: 200,
+    description: 'Возвращает объект с вложенным списком ВСЕХ блюд',
+    type: MenuViewModel,
+  })
+  @ApiBearerAuth()
+  @Get()
+  @HttpCode(HttpStatus.OK)
+  async getFullMenu(): Promise<MenuViewModel> {
+    return this.dishesQueryRepo.buildMenu(true);
   }
 
   @ApiBody({ type: DishInputModel })

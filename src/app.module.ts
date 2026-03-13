@@ -6,6 +6,7 @@ import { MenuModule } from './Modules/MenuCRUD/menu.module';
 import { AuthModule } from './Modules/Auth/auth.module';
 import { TypeormConfig } from '../typeorm.config';
 import { ServiceStatusModule } from './Modules/ServiceStatus/status.module';
+import { BannerModule } from './Modules/BannerCRUD/banner.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { ServiceStatusModule } from './Modules/ServiceStatus/status.module';
     AuthModule,
     MenuModule,
     ServiceStatusModule,
+    BannerModule,
   ],
   controllers: [AppController],
   providers: [AppService],
