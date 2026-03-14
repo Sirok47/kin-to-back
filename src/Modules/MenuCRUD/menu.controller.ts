@@ -55,8 +55,12 @@ export class MenuController {
     description: 'Возвращает объект с вложенным списком ВСЕХ блюд',
     type: MenuViewModel,
   })
+  @ApiResponse({
+    status: 401,
+    description: 'Not admin',
+  })
   @ApiBearerAuth()
-  @Get()
+  @Get('all')
   @HttpCode(HttpStatus.OK)
   async getFullMenu(): Promise<MenuViewModel> {
     return this.dishesQueryRepo.buildMenu(true);

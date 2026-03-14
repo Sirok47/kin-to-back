@@ -4,7 +4,7 @@ import {
   Entity,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { AdminInputModel } from './users.dto';
+import { AdminInputModel } from '../Users/users.dto';
 
 @Entity({ name: 'Admins' })
 export class AdminEntity {

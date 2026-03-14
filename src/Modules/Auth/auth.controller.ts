@@ -1,4 +1,10 @@
-import { ApiBody, ApiProperty, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiProperty,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import {
   Body,
   Controller,
@@ -10,12 +16,14 @@ import {
   Req,
   Res,
   UnauthorizedException,
+  UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AdminInputModel, UserInputModel } from './Users/users.dto';
 import { IsUUID } from 'class-validator';
 import { type Request, type Response } from 'express';
 import { config } from '../../Settings/config';
+import { RefreshTokenGuard } from '../../Middlewares/Guards/refreshToken.guard';
 
 class codeBody {
   @ApiProperty({ type: String })
@@ -94,6 +102,45 @@ export class AuthController {
       IP: req.ip!,
       userAgent: req.header('user-agent')!,
     });
+    if (!tokenPair) {
+      throw new UnauthorizedException();
+    }
+    const result = {
+      accessToken: tokenPair.accessToken,
+    };
+    res.cookie('refreshToken', tokenPair.refreshToken, {
+      httpOnly: true,
+      secure: true,
+      domain: config.CURRENT_URL,
+      path: config.COOKIE_PATH,
+    });
+    return result;
+  }
+
+  @ApiResponse({
+    status: 200,
+    description: 'Возвращает новую пару токенов',
+    type: tokenResponse,
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Invalid refresh token',
+  })
+  @ApiBearerAuth()
+  @UseGuards(RefreshTokenGuard)
+  @Post('/code/:number')
+  @HttpCode(HttpStatus.OK)
+  async refreshToken(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<tokenResponse> {
+    const tokenPair = await this.authService.RefreshToken(
+      req.cookies.refreshToken,
+      {
+        IP: req.ip!,
+        userAgent: req.header('user-agent')!,
+      },
+    );
     if (!tokenPair) {
       throw new UnauthorizedException();
     }

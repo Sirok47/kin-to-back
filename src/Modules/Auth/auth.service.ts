@@ -14,8 +14,8 @@ import { SessionEntity } from './session.entity';
 import { oneSecond } from '../../Utils/dateHelpers';
 import { SessionsRepository } from './session.repository';
 import { JwtAdapter } from '../Adapters/JWT/jwt.adapter';
-import { AdminEntity } from './Users/admin.entity';
-import { AdminsRepository } from './Users/admin.repository';
+import { AdminEntity } from './Admins/admin.entity';
+import { AdminsRepository } from './Admins/admin.repository';
 import { CRYPTO_SYMBOL } from '../Adapters/Crypto/crypto.interface';
 
 @Injectable()

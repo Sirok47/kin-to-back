@@ -6,7 +6,7 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { ProfileEntity } from './profiles.entity';
+import { ProfileEntity } from './ProfileInfo/profiles.entity';
 import { UserInputModel } from './users.dto';
 import { SessionEntity } from '../session.entity';
 import { ConfirmationDataEntity } from './sms-confirmation.entity';
@@ -16,8 +16,8 @@ export class UserEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column('varchar', { length: 30, nullable: true })
-  phoneNumber: string | null;
+  @Column('varchar', { length: 30 })
+  phoneNumber: string;
 
   @Column('timestamp with time zone', { default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
@@ -29,7 +29,7 @@ export class UserEntity {
     cascade: true,
     nullable: true,
   })
-  userProfile: ProfileEntity | null = null;
+  userProfile: ProfileEntity | null;
 
   @OneToOne(() => ConfirmationDataEntity, (data) => data.user, {
     cascade: true,
