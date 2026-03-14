@@ -128,7 +128,7 @@ export class AuthController {
   })
   @ApiBearerAuth()
   @UseGuards(RefreshTokenGuard)
-  @Post('/code/:number')
+  @Post('/refresh')
   @HttpCode(HttpStatus.OK)
   async refreshToken(
     @Req() req: Request,
